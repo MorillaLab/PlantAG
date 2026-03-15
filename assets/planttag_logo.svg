@@ -1,0 +1,86 @@
+<svg width="512" height="512" viewBox="0 0 680 680" xmlns="http://www.w3.org/2000/svg">
+<style>
+  .ring        { fill: none; stroke: #1D9E75; stroke-width: 1.2; opacity: 0.35; }
+  .node-teal   { fill: #1D9E75; }
+  .node-coral  { fill: #D85A30; }
+  .node-amber  { fill: #BA7517; }
+  .node-purple { fill: #7F77DD; }
+  .node-gray   { fill: #888780; }
+  .edge        { stroke: #1D9E75; stroke-width: 1.4; fill: none; opacity: 0.55; }
+  .edge-warm   { stroke: #BA7517; stroke-width: 1.2; fill: none; opacity: 0.45; }
+  .leaf-dark   { fill: #0B4A35; }
+  .leaf-mid    { fill: #0F6E50; }
+  .leaf-lite   { fill: #1D9E75; }
+  .wordmark    { font-family: Arial Black, Arial, sans-serif; font-weight: 900; fill: #F4F6F8; }
+  .sub         { font-family: Arial, sans-serif; font-weight: 400; fill: #5DCAA5; letter-spacing: 2px; }
+</style>
+
+<circle cx="340" cy="340" r="330" fill="#0D1B2A"/>
+
+<circle cx="340" cy="260" r="170" class="ring"/>
+<circle cx="340" cy="260" r="120" class="ring" opacity="0.22"/>
+<circle cx="340" cy="260" r="70"  class="ring" opacity="0.15"/>
+
+<line x1="340" y1="90"  x2="474" y2="148" class="edge"/>
+<line x1="474" y1="148" x2="510" y2="286" class="edge"/>
+<line x1="510" y1="286" x2="432" y2="406" class="edge"/>
+<line x1="432" y1="406" x2="248" y2="406" class="edge"/>
+<line x1="248" y1="406" x2="170" y2="286" class="edge"/>
+<line x1="170" y1="286" x2="206" y2="148" class="edge"/>
+<line x1="206" y1="148" x2="340" y2="90"  class="edge"/>
+
+<line x1="340" y1="90"  x2="340" y2="180" class="edge-warm"/>
+<line x1="474" y1="148" x2="400" y2="228" class="edge-warm"/>
+<line x1="510" y1="286" x2="420" y2="280" class="edge-warm"/>
+<line x1="432" y1="406" x2="380" y2="326" class="edge-warm"/>
+<line x1="248" y1="406" x2="300" y2="326" class="edge-warm"/>
+<line x1="170" y1="286" x2="260" y2="280" class="edge-warm"/>
+<line x1="206" y1="148" x2="280" y2="228" class="edge-warm"/>
+
+<line x1="340" y1="180" x2="400" y2="228" class="edge"/>
+<line x1="400" y1="228" x2="420" y2="280" class="edge"/>
+<line x1="420" y1="280" x2="380" y2="326" class="edge"/>
+<line x1="380" y1="326" x2="300" y2="326" class="edge"/>
+<line x1="300" y1="326" x2="260" y2="280" class="edge"/>
+<line x1="260" y1="280" x2="280" y2="228" class="edge"/>
+<line x1="280" y1="228" x2="340" y2="180" class="edge"/>
+
+<line x1="340" y1="180" x2="340" y2="260" class="edge-warm" opacity="0.6"/>
+<line x1="400" y1="228" x2="340" y2="260" class="edge-warm" opacity="0.6"/>
+<line x1="420" y1="280" x2="340" y2="260" class="edge-warm" opacity="0.6"/>
+<line x1="380" y1="326" x2="340" y2="260" class="edge-warm" opacity="0.6"/>
+<line x1="300" y1="326" x2="340" y2="260" class="edge-warm" opacity="0.6"/>
+<line x1="260" y1="280" x2="340" y2="260" class="edge-warm" opacity="0.6"/>
+<line x1="280" y1="228" x2="340" y2="260" class="edge-warm" opacity="0.6"/>
+
+<path d="M340,240 C320,215 295,200 285,185 C310,180 335,190 340,240Z" class="leaf-dark"/>
+<path d="M340,240 C360,215 385,200 395,185 C370,180 345,190 340,240Z" class="leaf-dark"/>
+<path d="M340,244 C322,222 300,208 290,192 C315,188 338,198 340,244Z" class="leaf-mid"/>
+<path d="M340,244 C358,222 380,208 390,192 C365,188 342,198 340,244Z" class="leaf-mid"/>
+<path d="M340,248 C328,232 314,222 306,210 C324,208 338,218 340,248Z" class="leaf-lite" opacity="0.7"/>
+<path d="M340,248 C352,232 366,222 374,210 C356,208 342,218 340,248Z" class="leaf-lite" opacity="0.7"/>
+
+<circle cx="340" cy="90"  r="14" class="node-coral"/>
+<circle cx="474" cy="148" r="12" class="node-amber"/>
+<circle cx="510" cy="286" r="11" class="node-gray"/>
+<circle cx="432" cy="406" r="12" class="node-teal"/>
+<circle cx="248" cy="406" r="12" class="node-teal" opacity="0.7"/>
+<circle cx="170" cy="286" r="11" class="node-purple"/>
+<circle cx="206" cy="148" r="11" class="node-gray" opacity="0.8"/>
+
+<circle cx="340" cy="180" r="9" class="node-teal"/>
+<circle cx="400" cy="228" r="9" class="node-amber"/>
+<circle cx="420" cy="280" r="9" class="node-gray"/>
+<circle cx="380" cy="326" r="9" class="node-teal"/>
+<circle cx="300" cy="326" r="9" class="node-coral" opacity="0.7"/>
+<circle cx="260" cy="280" r="9" class="node-purple" opacity="0.8"/>
+<circle cx="280" cy="228" r="9" class="node-teal"/>
+
+<circle cx="340" cy="260" r="22" fill="#0D1B2A"/>
+<circle cx="340" cy="260" r="22" fill="none" stroke="#1D9E75" stroke-width="2"/>
+<circle cx="340" cy="260" r="13" class="node-teal"/>
+
+<text x="340" y="492" text-anchor="middle" class="wordmark" font-size="72">PlantAG</text>
+<text x="340" y="526" text-anchor="middle" class="sub" font-size="15">PLANT TISSUE ANNOTATION</text>
+<text x="340" y="548" text-anchor="middle" class="sub" font-size="15">VIA GRAPH TOPOLOGY</text>
+</svg>
