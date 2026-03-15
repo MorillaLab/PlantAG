@@ -133,6 +133,7 @@ model = PlantAG.from_pretrained("planttag/weights/planttag_tomato.pt")
 
 ## Architecture
 
+<img src="assets/planttag_pipeline_horizontal.pdf" alt="PlantAG" width="140"/>
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Input: 4,400-dim feature vector per cell                           │
