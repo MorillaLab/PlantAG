@@ -135,7 +135,7 @@ model = PlantAG.from_pretrained("planttag/weights/planttag_tomato.pt")
 
 <div align="center">
 
-<img src="assets/planttag_pipeline_horizontal.png" alt="PlantAG_pipe" width="500"/>
+<img src="assets/planttag_pipeline_horizontal.png" alt="PlantAG_pipe" width="800"/>
 
 </div>
 
