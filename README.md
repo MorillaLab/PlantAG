@@ -134,6 +134,7 @@ model = PlantAG.from_pretrained("planttag/weights/planttag_tomato.pt")
 ## Architecture
 <div align="center">
 <img src="assets/planttag_pipeline_horizontal.png" alt="PlantAG_pipe" width="800"/>
+</div>
 
 **Why 3 layers?**
 Three message-passing steps allow each cell to aggregate information from cells up to 3 hops away — sufficient to propagate spatial and transcriptional context across the tissue without over-smoothing.
