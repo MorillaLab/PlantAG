@@ -1,24 +1,41 @@
-"""Tests for PlantAG GNN architecture."""
-import torch, pytest
+"""Tests for PlantAG GNN."""
+import torch
+import pytest
 from torch_geometric.data import Data
 
-
-@pytest.fixture
-def small_graph():
-    n, f, c = 20, 100, 5   # small dims for unit test speed
+def make_graph(n=30, f=100, c=5):
     x = torch.randn(n, f)
-    src = torch.randint(0, n, (60,))
-    dst = torch.randint(0, n, (60,))
+    src = torch.randint(0, n, (90,))
+    dst = torch.randint(0, n, (90,))
+    y = torch.randint(0, c, (n,))
     return Data(x=x, edge_index=torch.stack([src, dst]),
-                edge_attr=torch.rand(60)), n, c
+                edge_weight=torch.rand(90), y=y), n, c
 
+def test_forward_output_shape():
+    from planttag.model.gcn import PlantAG
+    graph, n, c = make_graph()
+    model = PlantAG(in_channels=100, num_classes=c)
+    out = model(graph)
+    assert out.shape == (n, c)
 
-def test_import():
-    import planttag
-    assert planttag.__version__ == "1.0.0"
+def test_log_softmax():
+    from planttag.model.gcn import PlantAG
+    graph, n, c = make_graph()
+    model = PlantAG(in_channels=100, num_classes=c)
+    out = model(graph)
+    assert torch.allclose(out.exp().sum(dim=1), torch.ones(n), atol=1e-5)
 
+def test_get_embeddings_shape():
+    from planttag.model.gcn import PlantAG
+    graph, n, c = make_graph()
+    model = PlantAG(in_channels=100, hidden_channels=64, num_classes=c)
+    emb = model.get_embeddings(graph)
+    assert emb.shape == (n, 64)
 
-def test_markers_loaded():
-    from planttag.labels.markers import TOMATO_LEAF_MARKERS
-    assert len(TOMATO_LEAF_MARKERS) == 10
-    assert "Parenchyma" in TOMATO_LEAF_MARKERS
+def test_predict_valid_range():
+    from planttag.model.gcn import PlantAG
+    graph, n, c = make_graph()
+    model = PlantAG(in_channels=100, num_classes=c)
+    preds = model.predict(graph)
+    assert len(preds) == n
+    assert all(0 <= p < c for p in preds)

@@ -132,9 +132,28 @@ model = PlantAG.from_pretrained("planttag/weights/planttag_tomato.pt")
 ---
 
 ## Architecture
-<div align="center">
-<img src="assets/planttag_pipeline_horizontal.png" alt="PlantAG_pipe" width="800"/>
-</div>
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  Input: 4,400-dim feature vector per cell                           │
+│  ├── 400-dim  persistence image  (Vietoris-Rips H₀ + H₁, 20×20)   │
+│  └── 4,000-dim HVG expression   (shifted-log normalised)           │
+├─────────────────────────────────────────────────────────────────────┤
+│  k-NN graph construction                                            │
+│  └── k=30 · cosine similarity · sparse adjacency matrix            │
+├─────────────────────────────────────────────────────────────────────┤
+│  GCNConv layer 1   hidden=64   ReLU   Dropout(0.5)                 │
+│  GCNConv layer 2   hidden=64   ReLU   Dropout(0.5)                 │
+│  GCNConv layer 3   hidden=64   ReLU   Dropout(0.5)  ← latent space │
+│  Linear layer      64 → n_classes     log-softmax                  │
+├─────────────────────────────────────────────────────────────────────┤
+│  Training: weighted cross-entropy · Adam lr=0.001 · early stopping │
+└─────────────────────────────────────────────────────────────────────┘
+         │                                      │
+         ▼                                      ▼
+  Cell-type labels                    64-dim latent space
+  (~90% accuracy)               (pseudotime · RNA velocity · UMAP)
+```
 
 **Why 3 layers?**
 Three message-passing steps allow each cell to aggregate information from cells up to 3 hops away — sufficient to propagate spatial and transcriptional context across the tissue without over-smoothing.
@@ -261,7 +280,7 @@ Tested on tomato leaf spatial transcriptomics (Visium, 1,740 cells, 10 cell type
 ```bibtex
 @software{aberbache_luna_2026_planttag,
   title   = {{PlantAG}: Plant Tissue Annotation via Graph Topology},
-  author  = {Aberbache, Melissa and Morilla, Ian},
+  author  = {Aberbache, Melissa and Luna, Ana M. and Morilla, Ian},
   year    = {2026},
   url     = {https://github.com/MorillaLab/PlantAG},
   note    = {Introduced in Luna*, Aberbache* et al., TYLCV Cell Atlas (2026)}
