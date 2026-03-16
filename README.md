@@ -14,7 +14,7 @@
 [![PyG](https://img.shields.io/badge/PyG-2.2-orange)](https://pytorch-geometric.readthedocs.io)
 [![giotto-tda](https://img.shields.io/badge/giotto--tda-0.5-1D9E75)](https://giotto-ai.github.io/gtda-docs/)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/MorillaLab/PlantAG/actions)
-[![DOI](https://img.shields.io/badge/DOI-pending-lightgrey)](https://doi.org)
+[![DOI](https://img.shields.io/badge/DOI)](https://doi.org/10.5281/zenodo.19048604)
 
 *Introduced in Luna\*, Aberbache\* et al. — TYLCV Cell Atlas (2026)*
 <br>
