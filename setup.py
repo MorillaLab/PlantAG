@@ -16,6 +16,7 @@ setup(
         "torch>=1.13",
         "torch-geometric>=2.2",
         "giotto-tda>=0.5",
+        "gudhi>=3.7",
         "scanpy>=1.9",
         "anndata>=0.9",
         "numpy>=1.23",
