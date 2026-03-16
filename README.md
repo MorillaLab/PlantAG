@@ -59,6 +59,7 @@ pip install -e .
 | Python | ≥ 3.9 |
 | PyTorch | ≥ 1.13 |
 | torch-geometric | ≥ 2.2 |
+| gudhi | ≥ 3.7 |
 | giotto-tda | ≥ 0.5 |
 | scanpy | ≥ 1.9 |
 | anndata | ≥ 0.9 |
