@@ -18,7 +18,7 @@
 
 *Introduced in Luna\*, Aberbache\* et al. — TYLCV Cell Atlas (2026)*
 <br>
-*MorillaLab · IHSM-UMA-CSIC, University of Malaga*
+*MorillaLab · IHSM-UMA-CSIC, Université Sorbonne Paris Nord*
 
 </div>
 
