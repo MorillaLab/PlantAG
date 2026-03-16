@@ -14,7 +14,7 @@
 [![PyG](https://img.shields.io/badge/PyG-2.2-orange)](https://pytorch-geometric.readthedocs.io)
 [![giotto-tda](https://img.shields.io/badge/giotto--tda-0.5-1D9E75)](https://giotto-ai.github.io/gtda-docs/)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/MorillaLab/PlantAG/actions)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16281076.svg)](https://doi.org/10.5281/zenodo.19048604)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16281076.svg)](https://doi.org/10.5281/zenodo.19052209)
 
 *Introduced in Luna\*, Aberbache\* et al. — TYLCV Cell Atlas (2026)*
 <br>
@@ -267,7 +267,7 @@ Tested on tomato leaf spatial transcriptomics (Visium, 1,740 cells, 10 cell type
   title   = {{PlantAG}: Plant Tissue Annotation via Graph Topology},
   author  = {Aberbache, Melissa and Morilla, Ian},
   year    = {2026},
-  doi     = {10.5281/zenodo.19048604},
+  doi     = {10.5281/zenodo.19052209},
   url     = {https://github.com/MorillaLab/PlantAG},
   note    = {Introduced in Luna*, Aberbache* et al., TYLCV Cell Atlas (2026)}
 }
