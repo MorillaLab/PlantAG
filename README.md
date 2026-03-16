@@ -263,7 +263,7 @@ Tested on tomato leaf spatial transcriptomics (Visium, 1,740 cells, 10 cell type
 ## Citation
 
 ```bibtex
-@software{aberbache_luna_2026_planttag,
+@software{aberbache_2026_planttag,
   title   = {{PlantAG}: Plant Tissue Annotation via Graph Topology},
   author  = {Aberbache, Melissa and Morilla, Ian},
   year    = {2026},
