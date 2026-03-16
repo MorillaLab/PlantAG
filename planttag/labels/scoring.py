@@ -1,6 +1,6 @@
 """
 planttag/labels/scoring.py
-Pseudo-label generation for PlantAG.
+Pseudo-label generation for PlantAG — matching notebook Cells 61-74.
 
 Marker genes are loaded from external .jsonl files (Trichomes, Chloroplast)
 and defined inline (Epidermal, Mesophyll, Guard, Vascular bundle).

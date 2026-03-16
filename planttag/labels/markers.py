@@ -1,7 +1,7 @@
 """
 planttag/labels/markers.py
 Complete marker gene sets for Solanum lycopersicum leaf spatial
-transcriptomics — (corrected).
+transcriptomics — derived from notebook Cell 71 (corrected).
 
 Sources:
     Trichomes:   trichome.jsonl  (63 genes)
@@ -209,8 +209,34 @@ def build_full_marker_dict(trichomes=None, chloroplast=None):
     }
 
 
-# ── Default instance (used by PlantAG when no jsonl paths provided) ───────
+# ── Default instance — full 14-type training set ────────────────────────
 TOMATO_LEAF_MARKERS = build_full_marker_dict()
+
+
+# ── 10-type atlas set (discarding step documented here) ──────────────────
+# After GNN prediction, four cell types were excluded from the final atlas
+# and all downstream biological analyses:
+#
+#   Guard        — functional overlap with Stomatal in this dataset
+#   Trichomes    — sparse spatial distribution; <5 cells per section
+#   Vascular bundle — subsumed by the more specific Vein and Xylem types
+#   Mesophyll-Ch — chloroplast-enriched mesophyll; subsumed by Mesophyll
+#
+# The 14-type set is used for pseudo-label TRAINING only (improves
+# boundary discrimination). The 10-type set is used for all
+# biological analyses, cosine distances, trajectory, and figures.
+
+DISCARDED_TYPES = ['Guard', 'Trichomes', 'Vascular bundle', 'Mesophyll-Ch']
+
+TOMATO_LEAF_MARKERS_10 = {
+    ct: genes for ct, genes in TOMATO_LEAF_MARKERS.items()
+    if ct not in DISCARDED_TYPES
+}
+
+CELL_TYPE_ORDER_10 = [
+    'Parenchyma', 'Vein', 'Mesophyll', 'Xylem', 'Epidermal',
+    'Bundle sheath', 'Stomatal', 'Subsidiary', 'Phloem', 'Hydathodes',
+]  # ordered by cosine distance at 24 dpi (high → low)
 
 
 # ── Colour palette — consistent across all atlas figures ─────────────────
