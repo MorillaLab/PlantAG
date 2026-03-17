@@ -213,28 +213,27 @@ def build_full_marker_dict(trichomes=None, chloroplast=None):
 TOMATO_LEAF_MARKERS = build_full_marker_dict()
 
 
-# ── 10-type atlas set (discarding step documented here) ──────────────────
+# ── 11-type atlas set (discarding step documented here) ──────────────────
 # After GNN prediction, four cell types were excluded from the final atlas
 # and all downstream biological analyses:
 #
-#   Guard        — functional overlap with Stomatal in this dataset
 #   Trichomes    — sparse spatial distribution; <5 cells per section
-#   Vascular bundle — subsumed by the more specific Vein and Xylem types
-#   Mesophyll-Ch — chloroplast-enriched mesophyll; subsumed by Mesophyll
+#   Epidermal — subsumed by the more specific Vein and Xylem types
+#   Mesophyll — subsumed by chloroplast-enriched mesophyll and Bundle sheath
 #
 # The 14-type set is used for pseudo-label TRAINING only (improves
-# boundary discrimination). The 10-type set is used for all
+# boundary discrimination). The 11-type set is used for all
 # biological analyses, cosine distances, trajectory, and figures.
 
-DISCARDED_TYPES = ['Guard', 'Trichomes', 'Vascular bundle', 'Mesophyll-Ch']
+DISCARDED_TYPES = ['Trichomes', 'Epidermal', 'Mesophyll']
 
-TOMATO_LEAF_MARKERS_10 = {
+TOMATO_LEAF_MARKERS_11 = {
     ct: genes for ct, genes in TOMATO_LEAF_MARKERS.items()
     if ct not in DISCARDED_TYPES
 }
 
-CELL_TYPE_ORDER_10 = [
-    'Parenchyma', 'Vein', 'Mesophyll', 'Xylem', 'Epidermal',
+CELL_TYPE_ORDER_11 = [
+    'Parenchyma', 'Vein', 'Mesophyll-Ch', 'Xylem', 'Guard',
     'Bundle sheath', 'Stomatal', 'Subsidiary', 'Phloem', 'Hydathodes',
 ]  # ordered by cosine distance at 24 dpi (high → low)
 
