@@ -87,7 +87,7 @@ marker_genes = TOMATO_LEAF_MARKERS  # swap for your species
 adata = PlantAG.annotate(
     adata,
     marker_genes=marker_genes,
-    n_pcs=10,
+    n_pcs=50,
     k=30,
     hidden_channels=64,
     epochs=200,
@@ -108,7 +108,7 @@ from planttag.labels import generate_pseudo_labels, compute_class_weights
 import torch
 
 # TDA features
-pi = compute_persistence_images(adata, n_pcs=10, n_neighbours=30)
+pi = compute_persistence_images(adata, n_pcs=50, n_neighbours=30)
 
 # Pseudo-labels
 labels = generate_pseudo_labels(adata, marker_genes, leiden_res=0.5)
@@ -118,7 +118,7 @@ weights = compute_class_weights(labels, n_classes=len(marker_genes))
 graph = build_knn_graph(adata, pi, k=30)
 
 # Model
-model = PlantAG(in_channels=4400, hidden_channels=64, num_classes=10)
+model = PlantAG(in_channels=4400, hidden_channels=64, num_classes=11)
 model.fit(graph, torch.tensor(labels), class_weights=weights, epochs=200)
 
 # Predict
@@ -126,7 +126,7 @@ predictions, latent = model.predict(graph)
 adata.obs["planttag_celltype"] = predictions
 adata.obsm["X_planttag"] = latent
 
-# Skip training — use pre-trained weights (tomato leaf, 10 types)
+# Skip training — use pre-trained weights (tomato leaf, 11 types)
 model = PlantAG.from_pretrained("planttag/weights/planttag_tomato.pt")
 ```
 
