@@ -34,7 +34,7 @@ Plant spatial transcriptomics has a fundamental annotation problem: the automate
 
 2. **Context via message passing.** A 3-layer Graph Convolutional Network propagates information across a cosine-similarity cell graph, so each cell's identity is refined not just by its own expression but by its transcriptional neighbourhood. This mirrors the biology: plant cell identity is maintained through positional cues and symplastic communication with adjacent cells.
 
-The result: **~90% annotation accuracy** across ten tomato leaf cell types, trained entirely on computationally derived pseudo-labels — no manual curation, no reference atlas.
+The result: **~90% annotation accuracy** across eleven tomato leaf cell types, trained entirely on computationally derived pseudo-labels — no manual curation, no reference atlas.
 
 ---
 
@@ -87,10 +87,10 @@ marker_genes = TOMATO_LEAF_MARKERS  # swap for your species
 adata = PlantAG.annotate(
     adata,
     marker_genes=marker_genes,
-    n_pcs=50,
+    n_pcs=10,
     k=30,
-    hidden_channels=64,
-    epochs=200,
+    hidden_channels=256,
+    epochs=100,
 )
 
 # Cell-type predictions are now in adata.obs["planttag_celltype"]
@@ -108,7 +108,7 @@ from planttag.labels import generate_pseudo_labels, compute_class_weights
 import torch
 
 # TDA features
-pi = compute_persistence_images(adata, n_pcs=50, n_neighbours=30)
+pi = compute_persistence_images(adata, n_pcs=10, n_neighbours=30)
 
 # Pseudo-labels
 labels = generate_pseudo_labels(adata, marker_genes, leiden_res=0.5)
@@ -118,7 +118,7 @@ weights = compute_class_weights(labels, n_classes=len(marker_genes))
 graph = build_knn_graph(adata, pi, k=30)
 
 # Model
-model = PlantAG(in_channels=4400, hidden_channels=64, num_classes=11)
+model = PlantAG(in_channels=4400, hidden_channels=256, num_classes=11)
 model.fit(graph, torch.tensor(labels), class_weights=weights, epochs=200)
 
 # Predict
@@ -248,14 +248,14 @@ See `docs/extending_to_new_species.md` and `examples/new_species.ipynb`.
 
 ## Benchmarks
 
-Tested on tomato leaf spatial transcriptomics (Visium, 1,740 cells, 10 cell types):
+Tested on tomato leaf spatial transcriptomics (Visium, 4,259 cells, 11 cell types):
 
 | Metric | Value |
 |--------|-------|
 | Overall accuracy | ~90% |
 | Training time (GPU, A100) | ~8 min |
 | Training time (CPU) | ~45 min |
-| Inference time (1,740 cells) | < 1 sec |
+| Inference time (4,259 cells) | < 3 sec |
 | Memory footprint | < 4 GB RAM |
 
 ---
