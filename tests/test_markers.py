@@ -55,15 +55,15 @@ def test_no_duplicate_genes_within_type():
 
 def test_ten_type_atlas_set():
     from planttag.labels.markers import (
-        TOMATO_LEAF_MARKERS_11, DISCARDED_TYPES, CELL_TYPE_ORDER_11
+        TOMATO_LEAF_MARKERS_10, DISCARDED_TYPES, CELL_TYPE_ORDER_10
     )
-    assert len(TOMATO_LEAF_MARKERS_11) == 11
+    assert len(TOMATO_LEAF_MARKERS_10) == 10
     for ct in DISCARDED_TYPES:
         assert ct not in TOMATO_LEAF_MARKERS_10, f"{ct} should be discarded"
-    assert len(CELL_TYPE_ORDER_11) == 11
+    assert len(CELL_TYPE_ORDER_10) == 10
 
 
 def test_discarded_types_list():
     from planttag.labels.markers import DISCARDED_TYPES
-    expected = {'Epidermal', 'Trichomes', 'Mesophyll'}
+    expected = {'Guard', 'Trichomes', 'Vascular bundle', 'Mesophyll-Ch'}
     assert set(DISCARDED_TYPES) == expected

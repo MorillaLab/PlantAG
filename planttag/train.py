@@ -40,8 +40,8 @@ def make_train_test_functions(model, graph_data, train_mask, test_mask,
         class_weights = class_weights.to(device)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=lr,
-                                  betas=(0.9, 0.999))
-    criterion = torch.nn.NLLLoss(weight=class_weights)
+                                  betas=(0.9, 0.999), weight_decay=1e-4)
+    criterion = torch.nn.CrossEntropyLoss(weight=class_weights)
 
     def train():
         model.train()
@@ -70,8 +70,8 @@ def run_training(
     train_mask,
     test_mask,
     class_weights=None,
-    epochs: int = 200,
-    lr: float = 0.001,
+    epochs: int = 100,
+    lr: float = 0.005,
     patience: int = 30,
     device: str = 'cpu',
     verbose: bool = True,
@@ -107,12 +107,12 @@ def run_training(
     model.to(device)
     graph_data = graph_data.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr,
-                                  betas=(0.9, 0.999))
+                                  betas=(0.9, 0.999), weight_decay=1e-4)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, patience=20, factor=0.5, verbose=False)
     if class_weights is not None:
         class_weights = class_weights.to(device)
-    criterion = torch.nn.NLLLoss(weight=class_weights)
+    criterion = torch.nn.CrossEntropyLoss(weight=class_weights)
 
     best_loss = float('inf')
     patience_counter = 0

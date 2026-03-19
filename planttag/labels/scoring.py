@@ -174,7 +174,7 @@ def generate_pseudo_labels(
     marker_genes: dict,
     leiden_res: float = 0.5,
     leiden_key: str = 'leiden',
-    obs_key: str = 'pseudo_cell_type_A1',
+    obs_key: str = 'pseudo_cell_type',
 ) -> np.ndarray:
     """
     Assign pseudo-labels by dominant cell type per Leiden cluster.

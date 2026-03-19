@@ -8,7 +8,7 @@ truncated label encoding, train/test split, class weights, and PyG Data object.
 Feature concatenation order (from notebook):
     X_aug = np.hstack([X_hvg_pca,                        # 50-dim
                        adata.obsm['images_vec1'],          # flattened images
-                       adata.obsm['tda_features_final_A1'] # TDA features])
+                       adata.obsm['tda_features_final'] # TDA features])
 
 Luna*, Aberbache* et al. — MorillaLab
 """
@@ -27,7 +27,7 @@ from torch_geometric.data import Data
 
 def build_weighted_graph(
     adata,
-    label_key: str = 'pseudo_cell_type_A1',
+    label_key: str = 'pseudo_cell_type',
     n_neighbors: int = 30,
     n_hvg_pca: int = 50,
     test_size: float = 0.2,
@@ -80,7 +80,7 @@ def build_weighted_graph(
     X_aug = np.hstack([
         X_hvg_pca,                             # HVG PCA
         adata.obsm['images_vec1'],              # flattened persistence images
-        adata.obsm['tda_features_final_A1'],    # TDA scalar features
+        adata.obsm['tda_features_final'],    # TDA scalar features
     ])                                           # (n_cells, 50 + img_dim + tda_dim)
     X_aug = StandardScaler().fit_transform(X_aug)
 
@@ -128,11 +128,17 @@ def build_weighted_graph(
     class_weights = torch.tensor(cw, dtype=torch.float)
 
     # ── 8. Assemble PyG Data object ───────────────────────────────────────
+    # Include spatial coordinates as auxiliary positional attribute
+    pos = None
+    if 'spatial' in adata.obsm:
+        pos = torch.tensor(adata.obsm['spatial'], dtype=torch.float)
+
     graph_data = Data(
         x=x,
         edge_index=edge_index,
         edge_weight=edge_weight,
         y=y,
+        pos=pos,
     )
 
     print(f"Graph built: {graph_data.num_nodes} nodes | "

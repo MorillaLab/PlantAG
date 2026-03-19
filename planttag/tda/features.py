@@ -230,7 +230,7 @@ def compute_final_tda_features_filtered_only(adata, images, n_levels=5):
 
     Total per cell: 8 + (8 × n_levels) = 8 + 40 = 48 features (default n_levels=5)
 
-    Stores result in adata.obsm['tda_features_final_A1'].
+    Stores result in adata.obsm['tda_features_final'].
 
     Args:
         adata:    AnnData object
@@ -238,7 +238,7 @@ def compute_final_tda_features_filtered_only(adata, images, n_levels=5):
         n_levels: number of superlevel filtration thresholds
 
     Returns:
-        adata with adata.obsm['tda_features_final_A1'] populated
+        adata with adata.obsm['tda_features_final'] populated
     """
     all_features = []
 
@@ -262,7 +262,7 @@ def compute_final_tda_features_filtered_only(adata, images, n_levels=5):
     # Replace any NaN/inf that slipped through
     tda_matrix = np.nan_to_num(tda_matrix, nan=0.0, posinf=0.0, neginf=0.0)
 
-    adata.obsm['tda_features_final_A1'] = tda_matrix
+    adata.obsm['tda_features_final'] = tda_matrix
 
     print(f"TDA features computed: {tda_matrix.shape} "
           f"({tda_matrix.shape[0]} cells × {tda_matrix.shape[1]} features)")

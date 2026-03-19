@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name="planttag",
     version="1.0.0",
-    description="Plant Tissue Annotation via Graph Topology — automated cell-type annotation for plant spatial transcriptomics",
+    description="Plant Tissue Annotation via Graph Topology — automated cell-type annotation for plant spatial transcriptomics (3-layer GCN, hidden=256)",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author="Aberbache M., Luna A.M., Morilla I.",
@@ -16,7 +16,6 @@ setup(
         "torch>=1.13",
         "torch-geometric>=2.2",
         "giotto-tda>=0.5",
-        "gudhi>=3.7",
         "scanpy>=1.9",
         "anndata>=0.9",
         "numpy>=1.23",
