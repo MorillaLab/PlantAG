@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plantag"
+version = "0.1.0"
+description = "PlantAG: Plant Tissue Annotation via Graph Topology - reference-free cell-type imputation for plant spatial transcriptomics"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+authors = [{name = "Morilla Lab, IHSM-UMA-CSIC and Université Sorbonne Paris Nord"}]
+dependencies = [
+  "numpy", "pandas", "scipy", "scikit-learn", "anndata", "scanpy",
+  "gudhi", "persim", "igraph", "leidenalg",
+  "torch", "torch_geometric",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+plantag = ["data/*.json"]

@@ -1,315 +1,92 @@
-<div align="center">
+# PlantAG: Plant Tissue Annotation via Graph Topology
 
-<img src="assets/planttag_logo.svg" alt="PlantAG" width="140"/>
+[![tests](https://github.com/MorillaLab/PlantAG/actions/workflows/tests.yml/badge.svg)](https://github.com/MorillaLab/PlantAG/actions/workflows/tests.yml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
 
-# PlantAG
+PlantAG imputes cell types in plant spatial transcriptomics **without a single-cell reference**. Plant tissues rarely
+have a reference atlas, and spot-based arrays mix several cells per spot. PlantAG therefore describes every spot by the
+**shape of the expression landscape around it**, summarised with persistent homology, and learns cell types with a graph
+convolutional network guided by literature-curated marker lists.
 
-### Plant Tissue Annotation via Graph Topology
+PlantAG was developed for, and first applied in:
 
-**Automated cell-type annotation for plant spatial transcriptomics — no reference atlas required**
+> Luna, A. M., Aberbache, M. et al. *Spatial transcriptomics with PlantAG reveals a tissue-wide response of tomato
+> leaves to Tomato yellow leaf curl virus* (submitted). Analyses: [MorillaLab/tylcv-tomato-visium](https://github.com/MorillaLab/tylcv-tomato-visium)
 
-[![License: GPL-3.0](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](LICENSE)
-[![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)](https://python.org)
-[![PyTorch](https://img.shields.io/badge/PyTorch-1.13-EF4444?logo=pytorch&logoColor=white)](https://pytorch.org)
-[![PyG](https://img.shields.io/badge/PyG-2.2-orange)](https://pytorch-geometric.readthedocs.io)
-[![giotto-tda](https://img.shields.io/badge/giotto--tda-0.5-1D9E75)](https://giotto-ai.github.io/gtda-docs/)
-[![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/MorillaLab/PlantAG/actions)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19052209.svg)](https://doi.org/10.5281/zenodo.19052209)
+## How it works
 
-*Introduced in Luna\*, Aberbache\* et al. — TYLCV Cell Atlas (2026)*
-<br>
-*MorillaLab · IHSM-UMA-CSIC, Université Sorbonne Paris Nord*
+1. **Expression space.** Raw counts are normalised (shifted logarithm). The 4,000 most deviant genes, from analytic
+   Pearson residuals, are reduced to 50 principal components.
+2. **Local topology.** For each spot, a Vietoris–Rips filtration of the spot and its 29 nearest neighbours in that space
+   gives persistence diagrams of components (H₀) and loops (H₁). These are vectorised as persistence images and
+   complemented by 40 cubical-complex descriptors.
+3. **Training labels.** Literature marker lists are scored on every spot. Each Leiden cluster of the persistence images
+   receives the type with the highest mean score.
+4. **Graph convolution.** A cosine 30-nearest-neighbour graph on expression components, persistence images and
+   descriptors feeds a three-layer graph convolutional network (256 units) trained on 80% of spots.
+5. **Output.** A cell type for every spot and a 256-dimensional latent embedding.
 
-</div>
+Full defaults and the reasoning behind them: [docs/method.md](docs/method.md).
 
----
-
-## What PlantAG does
-
-Plant spatial transcriptomics has a fundamental annotation problem: the automated tools that work for human and mouse data all depend on reference cell-type atlases — and those atlases don't exist for most plant species.
-
-**PlantAG solves this.** It annotates cell types in plant spatial transcriptomics data using two ideas:
-
-1. **Topology as a fingerprint.** Rather than relying only on gene expression, PlantAG computes the topological structure of each cell's neighbourhood in PCA space using Vietoris-Rips persistent homology. This produces a 400-dimensional persistence image that captures the local geometry of the transcriptional manifold — a signal that is biologically informative and invisible to standard clustering methods.
-
-2. **Context via message passing.** A 3-layer Graph Convolutional Network propagates information across a cosine-similarity cell graph, so each cell's identity is refined not just by its own expression but by its transcriptional neighbourhood. This mirrors the biology: plant cell identity is maintained through positional cues and symplastic communication with adjacent cells.
-
-The result: **~90% annotation accuracy** across eleven tomato leaf cell types, trained entirely on computationally derived pseudo-labels — no manual curation, no reference atlas.
-
----
-
-## Install
+## Installation
 
 ```bash
-pip install planttag
+pip install torch --index-url https://download.pytorch.org/whl/cpu   # or the CUDA build for your system
+pip install git+https://github.com/MorillaLab/PlantAG.git
 ```
 
-Or from source:
+Google Colab already provides PyTorch; there, `pip install git+https://github.com/MorillaLab/PlantAG.git` is enough.
 
-```bash
-git clone https://github.com/MorillaLab/PlantAG.git
-cd PlantAG
-pip install -e .
-```
-
-### Requirements
-
-| Package | Version |
-|---------|---------|
-| Python | ≥ 3.9 |
-| PyTorch | ≥ 1.13 |
-| torch-geometric | ≥ 2.2 |
-| gudhi | ≥ 3.7 |
-| giotto-tda | ≥ 0.5 |
-| scanpy | ≥ 1.9 |
-| anndata | ≥ 0.9 |
-| numpy | ≥ 1.23 |
-| scipy | ≥ 1.9 |
-
----
-
-## Quickstart
+## Quick start
 
 ```python
 import scanpy as sc
-from planttag import PlantAG, compute_features, build_graph, pseudo_labels
+import plantag
 
-# 1. Load your AnnData (Visium or compatible)
-#    Requires: normalised expression + PCA computed
-adata = sc.read_h5ad("my_spatial_data.h5ad")
-
-# 2. Define marker genes for your cell types
-#    (or use the built-in tomato leaf markers)
-from planttag.labels import TOMATO_LEAF_MARKERS
-marker_genes = TOMATO_LEAF_MARKERS  # swap for your species
-
-# 3. Run the full pipeline in one call
-adata = PlantAG.annotate(
-    adata,
-    marker_genes=marker_genes,
-    n_pcs=10,
-    k=30,
-    hidden_channels=256,
-    epochs=100,
-)
-
-# Cell-type predictions are now in adata.obs["planttag_celltype"]
-# Latent embeddings are in adata.obsm["X_planttag"]
-print(adata.obs["planttag_celltype"].value_counts())
+adata = sc.read_h5ad("visium_raw_counts.h5ad")      # X: raw counts; obs["sample"]: capture area
+markers = plantag.load_markers("json_data")          # tomato leaf lists, or any {cell type: [genes]} dictionary
+adata, result = plantag.run_plantag(adata, markers, seed=0)
+adata.obs["predicted_cell_type"].value_counts()
 ```
 
-Or step by step:
+The steps are also available one by one (`plantag.preprocessing`, `plantag.compute_topology`, `plantag.labels`,
+`plantag.model`). [examples/tomato_leaf_TYLCV_notebook.ipynb](examples/tomato_leaf_TYLCV_notebook.ipynb) is the Colab
+notebook used for the article.
 
-```python
-from planttag import PlantAG
-from planttag.tda import compute_persistence_images
-from planttag.graph import build_knn_graph
-from planttag.labels import generate_pseudo_labels, compute_class_weights
-import torch
+## Outputs
 
-# TDA features
-pi = compute_persistence_images(adata, n_pcs=10, n_neighbours=30)
+| Field | Content |
+|---|---|
+| `obs["predicted_cell_type"]` | PlantAG cell type of each spot |
+| `obs["pseudo_cell_type"]`, `obs["tda_leiden"]` | training labels and the Leiden clusters they came from |
+| `obsm["X_gnn_embed"]` | 256-dimensional latent embedding (third graph-convolution layer) |
+| `obsm["images_vec1"]`, `obsm["tda_features_final"]`, `obsm["X_tda_pca"]` | persistence images, scalar descriptors, their principal components |
+| `obsm["X_pca"]`, `var["highly_deviant"]` | expression components and the genes behind them |
 
-# Pseudo-labels
-labels = generate_pseudo_labels(adata, marker_genes, leiden_res=0.5)
-weights = compute_class_weights(labels, n_classes=len(marker_genes))
+More detail: [docs/outputs.md](docs/outputs.md).
 
-# Graph
-graph = build_knn_graph(adata, pi, k=30)
+## Using PlantAG well
 
-# Model
-model = PlantAG(in_channels=4400, hidden_channels=256, num_classes=11)
-model.fit(graph, torch.tensor(labels), class_weights=weights, epochs=200)
+- **Evaluate on held-out capture areas,** not on random spots. Spots of one capture area are spatially correlated, so a
+  random split is optimistic. The analysis notebook of the article implements this, together with expression-only
+  baselines and a random-marker-list null.
+- **Compare datasets of similar depth.** Type assignments depend on capture depth; in the article, re-running PlantAG at
+  a uniform 100 UMIs per spot gave a different partition. `run_plantag(..., thin_to_median_umis=N)` matches depth
+  before a comparison.
+- **Names come from the marker lists.** Treat them as provisional until confirmed independently, for example by *in situ*
+  hybridisation.
+- **Reproducibility.** With fixed `seed` and `device="cpu"`, results are identical between runs.
 
-# Predict
-predictions, latent = model.predict(graph)
-adata.obs["planttag_celltype"] = predictions
-adata.obsm["X_planttag"] = latent
+## Known issues
 
-# Skip training — use pre-trained weights (tomato leaf, 11 types)
-model = PlantAG.from_pretrained("planttag/weights/planttag_tomato.pt")
-```
-
----
-
-## Architecture
-
-<div align="center">
-
-<img src="assets/planttag_pipeline_horizontal.png" alt="PlantAG_pipe" width="800"/>
-
-</div>
-
-**Why 3 layers?**
-Three message-passing steps allow each cell to aggregate information from cells up to 3 hops away — sufficient to propagate spatial and transcriptional context across the tissue without over-smoothing.
-
-| Layers | Accuracy |
-|--------|---------|
-| 1 | 82.4% |
-| 2 | 87.3% |
-| **3** | **90.1%** |
-| 4 | 88.6% |
-
-**Why topology?**
-Vietoris-Rips persistent homology captures the *shape* of the transcriptional manifold around each cell — loop-like and cluster-like features that standard dimensionality reduction cannot represent. In TYLCV-infected tissue, infected cells show significantly more high-persistence H₁ features than controls: a topological signature of viral reprogramming that differential expression analysis cannot detect.
-
----
-
-## The latent space
-
-The 64-dimensional penultimate-layer embeddings (`adata.obsm["X_planttag"]`) are not just an intermediate computation — they are a biologically meaningful representation of cellular state that encodes continuous transcriptional relationships between cell types.
-
-```python
-import scanpy as sc
-
-# Compute diffusion map on PlantAG latent space
-sc.pp.neighbors(adata, use_rep="X_planttag")
-sc.tl.diffmap(adata)
-sc.tl.dpt(adata, n_dcs=10)  # diffusion pseudotime
-
-# RNA velocity on PlantAG embedding
-import scvelo as scv
-scv.tl.velocity_graph(adata, basis="X_planttag")
-scv.pl.velocity_embedding_stream(adata, basis="planttag")
-```
-
----
-
-## Repository structure
-
-```
-PlantAG/
-│
-├── planttag/
-│   ├── __init__.py           # PlantAG.annotate() — one-call API
-│   ├── model/
-│   │   └── gcn.py            # GCNConv architecture + fit/predict
-│   ├── tda/
-│   │   └── features.py       # Vietoris-Rips → persistence images
-│   ├── graph/
-│   │   └── builder.py        # k-NN graph (cosine similarity, PyG)
-│   ├── labels/
-│   │   ├── scoring.py        # Marker gene z-score pseudo-labelling
-│   │   └── markers.py        # TOMATO_LEAF_MARKERS + helpers
-│   └── weights/
-│       └── planttag_tomato.pt  # Pre-trained weights (10 tomato cell types)
-│
-├── tests/
-│   ├── test_tda.py
-│   ├── test_graph.py
-│   ├── test_model.py
-│   └── test_pipeline.py
-│
-├── docs/
-│   ├── installation.md
-│   ├── quickstart.md
-│   ├── api_reference.md
-│   └── extending_to_new_species.md
-│
-├── examples/
-│   ├── tomato_leaf.ipynb     # Full TYLCV atlas annotation walkthrough
-│   └── new_species.ipynb     # Adapting PlantAG to a new plant species
-│
-├── assets/
-│   └── planttag_logo.svg
-│
-├── setup.py
-├── pyproject.toml
-├── environment.yml
-├── requirements.txt
-└── README.md
-```
-
----
-
-## Extending to a new plant species
-
-PlantAG is not tomato-specific. The architecture and hyperparameters generalise; only the marker gene sets need updating.
-
-```python
-from planttag.labels import generate_pseudo_labels
-
-# Define markers for your species and cell types
-my_markers = {
-    "Epidermis":    ["AT1G01780", "AT2G26250"],   # Arabidopsis example
-    "Vasculature":  ["AT5G66390", "AT3G01010"],
-    "Mesophyll":    ["AT1G29930", "AT5G38430"],
-    # ...
-}
-
-labels = generate_pseudo_labels(adata, marker_genes=my_markers, leiden_res=0.5)
-model = PlantAG(in_channels=4400, hidden_channels=64, num_classes=len(my_markers))
-model.fit(graph, labels)
-```
-
-See `docs/extending_to_new_species.md` and `examples/new_species.ipynb`.
-
----
-
-## Benchmarks
-
-Tested on tomato leaf spatial transcriptomics (Visium, 4,259 cells, 11 cell types):
-
-| Metric | Value |
-|--------|-------|
-| Overall accuracy | ~90% |
-| Training time (GPU, A100) | ~8 min |
-| Training time (CPU) | ~45 min |
-| Inference time (4,259 cells) | < 3 sec |
-| Memory footprint | < 4 GB RAM |
-
----
+The tomato leaf marker lists are kept exactly as used in the article, including three gene names joined by a missing
+comma (for example `LOC101264905WER` in Trichomes). Correcting them changes the training labels, so it is left to a
+future release.
 
 ## Citation
 
-```bibtex
-@software{aberbache_2026_planttag,
-  title   = {{PlantAG}: Plant Tissue Annotation via Graph Topology},
-  author  = {Aberbache, Melissa and Morilla, Ian},
-  year    = {2026},
-  doi     = {10.5281/zenodo.19052209},
-  url     = {https://github.com/MorillaLab/PlantAG},
-  note    = {Introduced in Luna*, Aberbache* et al., TYLCV Cell Atlas (2026)}
-}
-```
-
-If you use PlantAG on TYLCV data, please also cite the atlas paper:
-
-```bibtex
-@article{luna_aberbache_2026_tylcv_atlas,
-  title   = {Cell-type-resolved spatial transcriptomics reveals stratified
-             viral tropism and emergent defence coordination in
-             {TYLCV}-infected tomato leaves},
-  author  = {Luna, Ana M. and Aberbache, Melissa and others},
-  year    = {2026},
-  url     = {https://github.com/MorillaLab/tylcv-cell-atlas}
-}
-```
-
----
-
-## Contributing
-
-Issues and PRs are welcome. Before opening a PR:
-
-```bash
-pip install -e ".[dev]"
-pytest tests/ -v
-```
-
-See `.github/CONTRIBUTING.md` for code style and branch conventions.
-
----
+Please cite the article above and this software ([CITATION.cff](CITATION.cff)).
 
 ## Licence
 
-GPL-3.0 — see [LICENSE](LICENSE).
-Pre-trained weights: CC BY 4.0.
-
----
-
-<div align="center">
-<b>MorillaLab · IHSM-UMA-CSIC · University of Malaga</b><br>
-<a href="mailto:ian.morilla@ihsm.uma-csic.es">ian.morilla@ihsm.uma-csic.es</a><br><br>
-<i>Built to make plant spatial transcriptomics annotation<br>as easy as it is for human data.</i>
-</div>
+MIT, see [LICENSE](LICENSE).

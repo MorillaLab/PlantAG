@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use PlantAG, please cite the article and this software."
+title: "PlantAG: Plant Tissue Annotation via Graph Topology"
+version: 0.1.0
+license: MIT
+repository-code: "https://github.com/MorillaLab/PlantAG"
+authors:
+  - family-names: Morilla
+    given-names: Ian
+    affiliation: "IHSM-UMA-CSIC, Málaga, Spain; Université Sorbonne Paris Nord, France"
+  # add the other contributors to PlantAG here
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.XXXXXXX"   # DOI minted by Zenodo for the release
+preferred-citation:
+  type: article
+  title: "Spatial transcriptomics with PlantAG reveals a tissue-wide response of tomato leaves to Tomato yellow leaf curl virus"
+  authors:
+    - family-names: Luna
+      given-names: Ana M.
+    - family-names: Aberbache
+      given-names: Melissa
+    # complete the author list as published
+  journal: "Plant Biotechnology Journal"
+  year: 2027
+  status: submitted
