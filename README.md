@@ -1,6 +1,8 @@
-[![assets](https://github.com/MorillaLab/PlantAG/blob/main/assets/planttag_logo.svg))]
-# PlantAG: Plant Tissue Annotation via Graph Topology
+<p align="center">
+  <img src="https://raw.githubusercontent.com/MorillaLab/PlantAG/main/assets/planttag_logo.svg" width="200" alt="PlantAG logo">
+</p>
 
+# PlantAG: Plant Tissue Annotation via Graph Topology
 
 [![tests](https://github.com/MorillaLab/PlantAG/actions/workflows/tests.yml/badge.svg)](https://github.com/MorillaLab/PlantAG/actions/workflows/tests.yml)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
