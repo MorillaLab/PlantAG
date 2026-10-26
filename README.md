@@ -1,5 +1,6 @@
 # PlantAG: Plant Tissue Annotation via Graph Topology
 
+[![assets](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
 [![tests](https://github.com/MorillaLab/PlantAG/actions/workflows/tests.yml/badge.svg)](https://github.com/MorillaLab/PlantAG/actions/workflows/tests.yml)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
 
