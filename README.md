@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/MorillaLab/PlantAG/main/assets/planttag_logo.png" height="120" alt="PlantAG Logo">
+  <img src="assets/planttag_logo.png" height="120" alt="PlantAG logo">
 </p>
 
 # PlantAG: Plant Tissue Annotation via Graph Topology
