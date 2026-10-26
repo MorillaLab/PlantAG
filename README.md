@@ -5,7 +5,7 @@
 # PlantAG: Plant Tissue Annotation via Graph Topology
 
 [![tests](https://github.com/MorillaLab/PlantAG/actions/workflows/tests.yml/badge.svg)](https://github.com/MorillaLab/PlantAG/actions/workflows/tests.yml)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23664403.svg)](https://doi.org/10.5281/zenodo.23664403)
 
 PlantAG imputes cell types in plant spatial transcriptomics **without a single-cell reference**. Plant tissues rarely
 have a reference atlas, and spot-based arrays mix several cells per spot. PlantAG therefore describes every spot by the
